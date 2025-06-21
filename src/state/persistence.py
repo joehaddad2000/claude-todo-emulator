@@ -1,5 +1,4 @@
 import json
-import os
 from datetime import datetime
 from pathlib import Path
 
@@ -58,9 +57,6 @@ class FilePersistence:
 
             # Atomic rename
             temp_path.replace(self.file_path)
-
-            # Set appropriate permissions (user read/write only)
-            os.chmod(self.file_path, 0o600)
 
             # First-time setup actions
             if is_first_time:
