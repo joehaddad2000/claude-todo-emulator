@@ -12,26 +12,13 @@ This MCP server replicates Claude Code's todo system, giving your AI assistant t
 - Remember progress when you switch between projects
 - Enforce single in-progress task focus
 
-## Why You Want This
-
-Without task management, AI assistants:
-
-- ❌ Forget what they were working on between conversations
-- ❌ Lose track of multi-step implementations
-- ❌ Can't prioritize or organize complex work
-- ❌ Leave tasks half-finished when you switch contexts
-
-With this MCP server:
-
-- ✅ **Persistent memory** - Tasks survive across sessions
-- ✅ **Project-scoped** - Each workspace gets its own todo list
-- ✅ **Automatic tracking** - AI knows when to create/update tasks
-- ✅ **Progress visibility** - See exactly what's completed/pending
-- ✅ **Focus enforcement** - Only one task in-progress at a time
-
 ## Quick Start
 
 **No installation required!** Just add this to your MCP configuration:
+
+### Cursor IDE
+
+Create `.cursor/mcp.json` in your project root:
 
 ```json
 {
@@ -44,8 +31,19 @@ With this MCP server:
 }
 ```
 
-- **Cursor**: Create `.cursor/mcp.json` in your project root
-- **Other IDEs**: Add to your MCP configuration file
+### Codex CLI
+
+Create `config.toml` at your project root:
+
+```toml
+[mcp_servers.task-manager]
+command = "uvx"
+args = ["claude-todo-emulator"]
+```
+
+### Other IDEs
+
+Add the JSON configuration above to your MCP settings file.
 
 **Restart your IDE** and try: _"Create a todo list for adding user authentication"_
 

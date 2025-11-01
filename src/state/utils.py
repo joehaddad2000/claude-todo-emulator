@@ -78,7 +78,9 @@ def copy_cursor_rules(workspace_path: Path) -> bool:
 
         try:
             # Access the template file from the state package
-            template_content = files("src.state").joinpath(source_filename).read_text(encoding="utf-8")
+            template_content = (
+                files("src.state").joinpath(source_filename).read_text(encoding="utf-8")
+            )
 
             # Write the content to the target location
             with open(target_path, "w", encoding="utf-8") as f:
@@ -89,3 +91,94 @@ def copy_cursor_rules(workspace_path: Path) -> bool:
             continue
 
     return success_count == len(rules_files)
+
+
+def update_agents_md(workspace_path: Path) -> bool:
+    """
+    Append todo management instructions to AGENTS.MD file for Codex CLI.
+    Creates the file if it doesn't exist, appends if it does.
+    Avoids duplicate content by checking for marker.
+
+    Args:
+        workspace_path: Path to the workspace directory
+
+    Returns:
+        True if AGENTS.MD was updated/created successfully, False otherwise
+    """
+    agents_md_path = workspace_path / "AGENTS.MD"
+    marker = "<!-- TODO_MANAGEMENT_INSTRUCTIONS -->"
+
+    try:
+        # Read existing content if file exists
+        existing_content = ""
+        if agents_md_path.exists():
+            with open(agents_md_path, "r", encoding="utf-8") as f:
+                existing_content = f.read()
+
+            # Check if our content is already present
+            if marker in existing_content:
+                return True  # Already present, nothing to do
+
+        # Create brief instructions for AGENTS.MD
+        todo_instructions = """
+
+<!-- TODO_MANAGEMENT_INSTRUCTIONS -->
+
+# Task Management
+
+This project uses MCP TodoRead/TodoWrite tools for task tracking.
+
+## Core Rules
+
+**BEFORE responding to any request:**
+1. Call `TodoRead()` to check current task status
+2. Update progress with `TodoWrite()` when starting/completing tasks
+
+**Status Management:**
+- Only ONE task can have status "in_progress" at a time
+- Mark tasks "in_progress" BEFORE starting work
+- Complete tasks IMMEDIATELY when finished (don't batch)
+- Break complex requests into specific, actionable todos
+
+**Visual Display (Required):**
+Always show the complete todo list after every TodoRead/TodoWrite:
+```
+Current todos:
+✅ Research patterns (completed)
+🔄 Implement feature (in_progress)
+⏳ Add tests (pending)
+```
+Icons: ✅ = completed, 🔄 = in_progress, ⏳ = pending
+
+**Tool Reference:**
+```python
+TodoRead()  # No parameters, returns current todos
+TodoWrite(todos=[...])  # Replaces entire list
+
+Todo Structure:
+{
+  "id": "unique-id",
+  "content": "specific task description",
+  "status": "pending|in_progress|completed",
+  "priority": "high|medium|low"
+}
+```
+
+<!-- END_TODO_MANAGEMENT_INSTRUCTIONS -->
+"""
+
+        # Append to existing content or create new file
+        final_content = (
+            existing_content + todo_instructions
+            if existing_content
+            else todo_instructions.lstrip()
+        )
+
+        # Write the updated content
+        with open(agents_md_path, "w", encoding="utf-8") as f:
+            f.write(final_content)
+
+        return True
+
+    except (IOError, OSError, FileNotFoundError):
+        return False

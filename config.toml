@@ -1,0 +1,3 @@
+[mcp_servers.task-manager]
+command = "uvx"
+args = ["claude-todo-emulator"]
