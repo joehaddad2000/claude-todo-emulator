@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/joehaddad2000-claude-todo-emulator-badge.png)](https://mseep.ai/app/joehaddad2000-claude-todo-emulator)
+
 # Claude Todo MCP Server
 
 [![PyPI Version](https://img.shields.io/pypi/v/claude-todo-emulator.svg)](https://pypi.org/project/claude-todo-emulator/)
